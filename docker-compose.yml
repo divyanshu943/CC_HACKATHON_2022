@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+  mongodb:
+    image: 'mongo'
+    ports:
+      - '27017:27017'
+
+
+  rmconsumer:
+    # image: rmconsumerimage
+    build: rmconsumer
+    volumes:
+      - ./rmconsumer:/ride_matching_consumer
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SERVER_IP=producer
+      - SERVER_PORT=6000
+      - CUST_ID=1
+      - CONSUMERIP="192.168.1.1"
+      - CONSUMERNAME="Consumer1"
+
+  rmconsumer2:
+    # image: rmconsumerimage
+    build: rmconsumer
+    volumes:
+      - ./rmconsumer:/ride_matching_consumer
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SERVER_IP=producer
+      - SERVER_PORT=6000
+      - CUST_ID=2
+      - CONSUMERIP="192.168.1.2"
+      - CONSUMERNAME="Consumer2"
+
+  rmconsumer3:
+    # image: rmconsumerimage
+    build: rmconsumer
+    volumes:
+      - ./rmconsumer:/ride_matching_consumer
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SERVER_IP=producer
+      - SERVER_PORT=6000
+      - CUST_ID=3
+      - CONSUMERIP="192.168.1.3"
+      - CONSUMERNAME="Consumer3"
+
+  dbconsumer:
+    build: dbconsumer
+    # image: dbconsumerimage
+    volumes:
+      - ./dbconsumer:/database_consumer
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  producer:
+    build: producer
+    # image: producerimage
+    volumes:
+      - ./producer:/producer
+    ports:
+      - "6000:6000"
+    environment:
+      - PORT=6000
